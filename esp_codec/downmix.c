@@ -9,6 +9,8 @@
 #include "esp_downmix.h"
 #include "downmix.h"
 #include "audio_type_def.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 static const char *TAG = "DOWNMIX";
 
 // #define DEBUG_DOWNMIX_ISSUE
@@ -282,6 +284,9 @@ static int downmix_process(audio_element_handle_t self, char *in_buffer, int in_
 #else
     ret = audio_element_output(self, (char *)downmix->outbuf, ret);
 #endif
+    if (ret > 0) {
+        vTaskDelay(1);
+    }
     return ret;
 }
 
@@ -501,3 +506,4 @@ audio_element_handle_t downmix_init(downmix_cfg_t *config)
     ESP_LOGD(TAG, "downmix_init");
     return el;
 }
+
